@@ -6,7 +6,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <img src="lasan-logo.png" alt="lasan-logo.png"/>
+        <img src="lasan-logo.jpg" alt="lasan-logo.jpg"/>
 
         <h1>This is Nick's ReactApp test1.</h1>
         <p>
