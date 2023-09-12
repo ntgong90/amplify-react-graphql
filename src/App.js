@@ -1,14 +1,14 @@
-import logo from './logo.svg';
+//import logo from './logo.svg';
+import sanitationLogo from './cityLA-logo-website.jpg' //you have to import using this logo import for react
 import './App.css';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <img src="lasan-logo.jpg" alt="lasan-logo.jpg"/>
+        <img src={sanitationLogo} className="App-logo" alt="lasan-logo.jpg" />
 
-        <h1>This is Nick's ReactApp test1.</h1>
+        <h1>This is Nick's ReactApp LASAN react.</h1>
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
