@@ -1,30 +1,49 @@
 
 import {useState} from "react";
+import Papa from 'papaparse'; //import Papaprase
 
 //First parser component
 export const Parser1 = () => {
-    let [consoleLog, dataTest] = useState(null);
-    function handleClick() {
-        // eslint-disable-next-line no-useless-concat
-        dataTest(console.log(consoleLog));
+  //useState definitions here
+    let [data, setData] = useState([]);
+
+
+    function consoleLogFile() {
+      console.log(data[0])
       }
 
+
+    //https://stackoverflow.com/questions/67950444/how-to-convert-csv-file-data-to-json-object-in-reactjs
+    function handleFileUpload(event){
+      const files = event.target.files;
+      console.log(files)
+      if(files){
+        console.log('--------------------')
+        Papa.parse(files[0], {
+          complete: function(results) {
+            const newData = results.data;
+            console.log('Parsed Data here:', newData)
+            setData(newData)
+          }
+        }
+        )
+      }
+
+    }
 
     return (
         <div>
             <p>
                 Parser1
             </p>
-            <input type="file" id="input-file" accept=".csv"
-             onClick = {()=> {console.log('test')}}
-            // onClick = {(event)=> {event.target.value = null}}
-             onChange = {(event)=> console.log('uploaded')}
-            >
-            </input>
-        <button className="button1" onClick={handleClick}>
-          Press to Console Log
+            <input type="file" id="input-file" accept=".csv,.xlsx,.xls"
+             onChange = {handleFileUpload}
+            />
+            
+        <button className="button1" onClick={consoleLogFile}>
+          Display Data
         </button>
-        <p>{consoleLog}</p>
+        <p>File: {data}</p>
 
         </div>
     );
