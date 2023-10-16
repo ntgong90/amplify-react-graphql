@@ -2,7 +2,7 @@
 import sanitationLogo from './cityLA-logo-website.jpg' //you have to import using this logo import for react
 import './App.css';
 import { GithubLogo } from './GithubLogo';
-import { Parser1 } from './components';
+import { Parser } from './components';
 
 
 function App() {
@@ -11,10 +11,9 @@ function App() {
       <header className="App-header">
         <GithubLogo/>
         <img src={sanitationLogo} className="App-logo" alt="lasan-logo.jpg" />
+        <h1>LASAN Robocaller Data Upload</h1>
 
-        <h1>LASAN Robocaller Csv Parser react.</h1>
-
-        <Parser1 />
+        <Parser/>
 
       </header>
     </div>

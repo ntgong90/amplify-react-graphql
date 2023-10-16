@@ -72,3 +72,23 @@ a:hover{
     background-color: red;
   }
 }
+
+table{
+  /* position: absolute;
+  left:0px; */
+  border: 1px solid black;
+  padding: none;
+  margin: 0%;
+  overflow: auto;
+  height: 2em;
+}
+th{
+  font-size: 12px;
+  border: 1px solid black;
+}
+
+
+td,tr{
+  font-size: 12px;
+  border: 1px solid black;
+}
