@@ -62,14 +62,15 @@ a:hover{
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: red;
-    background-color: red;
+    color: lightslategray;
+    background-color: lightslategray;
   }
   a:hover {
-    color: red;
+    color: lightslategray;
+    
   }
   button {
-    background-color: red;
+    background-color: lightslategray;
   }
 }
 
