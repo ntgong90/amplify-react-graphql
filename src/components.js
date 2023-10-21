@@ -22,17 +22,19 @@ export const Parser = () => {
     //https://stackoverflow.com/questions/67950444/how-to-convert-csv-file-data-to-json-object-in-reactjs
     const handleFileUpload = async(event) => {
       const files = event.target.files,
-            fileName = files[0] ? files[0].name : 'No file uploaded',
-            fileExtensionType = (fileName.match(/\.csv|\.xlsx|.xls/gi) || [])[0];
+            fullFileName = files[0] ? files[0].name : 'No file uploaded',
+            fileName = fullFileName.split('.')[0] || 'No file',
+            fileExtensionType = (fullFileName.match(/\.csv|\.xlsx|.xls/gi) || [])[0];
 
             //thes check file input
-            // console.log(files)
-            // console.log(fileName)
-            // console.log(fileExtensionType)
+            console.log(files)
+            console.log(fullFileName)
+            console.log(fileExtensionType)
+            console.log(fileName)
 
-      if(fileExtensionType === '.csv') setFileType('Commodity csv');
-      if(fileExtensionType === '.xlsx') setFileType('Bulky xlsx');
-      if(fileExtensionType === '.xls') setFileType('Bulky xls');
+      if(fileExtensionType === '.csv') setFileType(fileName + fileExtensionType);
+      if(fileExtensionType === '.xlsx') setFileType(fileName + fileExtensionType);
+      if(fileExtensionType === '.xls') setFileType(fileName + fileExtensionType);
       
       if (files.length === 0){
         setData(defaultState);
@@ -78,30 +80,62 @@ export const Parser = () => {
                 worksheet = workbook.Sheets[workbook.SheetNames[0]],
                 jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-          const convertedBulkyData = jsonData.map(dataObject => {
-            const entries = Object.entries(dataObject),
-                  name = entries.filter(x => x[0] === 'SRContactName').map(index => ['Name', index[1]]),
-                  phone = entries.filter(x => x[0] === 'SRContactPhone').map(index => ['TelephoneNumber', typeof index[1] === 'string' ? 
-                                                                                                            index[1].replace(/-/gi,'') : index[1].toString()]),
-                  convertedBulkyEntries = Object.fromEntries([name, phone].flat());
-            
-            //set intial object state again
-            convertedBulkyEntries.ContactAttempts = 0;
-            convertedBulkyEntries.FullMessage = 0;
-            convertedBulkyEntries.lastCallBlast = 0;
-            convertedBulkyEntries.lastCallBlastTime = 0;
-            convertedBulkyEntries.SuccessfulConnection = 0;
-            convertedBulkyEntries.ToVoiceMail = 0;
-            convertedBulkyEntries.Route = 'N/A';
-            convertedBulkyEntries.District = 'N/A';
+          console.log(jsonData[0].SRNumber)
 
-            //return final array of correctly filled/populated objects
-            return convertedBulkyEntries;
-          });
-            //removes last row due to intial values being re-set
-            const cleandBulkyData = convertedBulkyData.slice(0, convertedBulkyData.length-1);
-            setData(cleandBulkyData)
+          //checks if there is an 'SRNumber' field to classify data as bulky data
+          if(jsonData[0].SRNumber){
+            const convertedBulkyData = jsonData.map(dataObject => {
+              const entries = Object.entries(dataObject),
+                    name = entries.filter(x => x[0] === 'SRContactName').map(index => ['Name', index[1]]),
+                    phone = entries.filter(x => x[0] === 'SRContactPhone').map(index => ['TelephoneNumber', typeof index[1] === 'string' ? 
+                                                                                                              index[1].replace(/-/gi,'') : index[1].toString()]),
+                    convertedBulkyEntries = Object.fromEntries([name, phone].flat());
+              
+              //set intial object state again
+              convertedBulkyEntries.ContactAttempts = 0;
+              convertedBulkyEntries.FullMessage = 0;
+              convertedBulkyEntries.lastCallBlast = 0;
+              convertedBulkyEntries.lastCallBlastTime = 0;
+              convertedBulkyEntries.SuccessfulConnection = 0;
+              convertedBulkyEntries.ToVoiceMail = 0;
+              convertedBulkyEntries.Route = 'N/A';
+              convertedBulkyEntries.District = 'N/A';
+  
+              //return final array of correctly filled/populated objects
+              return convertedBulkyEntries;
+            });
+              //removes last row due to intial values being re-set
+              const cleandBulkyData = convertedBulkyData.slice(0, convertedBulkyData.length-1);
+              setData(cleandBulkyData)
           }
+
+          //checks if there is an 'GreenWaste_Routes' field to classify data as kitchen pail data
+          if(jsonData[0].GreenWaste_Routes){
+            const convertedKitchenPailData = jsonData.map(dataObject => {
+              const entries = Object.entries(dataObject),
+                    route = entries.filter(x => x[0] === 'GreenWaste_Routes').map(index => ['Route', index[1]]),
+                    phone = entries.filter(x => x[0] === 'PHONE').map(index => ['TelephoneNumber', typeof index[1] === 'string' ? 
+                                                                                                              index[1].replace(/-/gi,'') : index[1].toString()]),
+                    convertedKitchenPailEntries = Object.fromEntries([route, phone].flat());
+              
+              //set intial object state again\
+              convertedKitchenPailEntries.ContactAttempts = 0;
+              convertedKitchenPailEntries.FullMessage = 0;
+              convertedKitchenPailEntries.lastCallBlast = 0;
+              convertedKitchenPailEntries.lastCallBlastTime = 0;
+              convertedKitchenPailEntries.SuccessfulConnection = 0;
+              convertedKitchenPailEntries.ToVoiceMail = 0;
+              convertedKitchenPailEntries.Name = 'No name';
+              convertedKitchenPailEntries.District = 'N/A';
+  
+              //return final array of correctly filled/populated objects
+              return convertedKitchenPailEntries;
+            });
+              //removes last row due to intial values being re-set
+              const cleanedKitchenPailData = convertedKitchenPailData.slice(0, convertedKitchenPailData.length-1);
+              setData(cleanedKitchenPailData)
+          }
+        }
     }
   }
 
@@ -114,8 +148,12 @@ export const Parser = () => {
           <button className="button1" id='displayDataButton' onClick={consoleLogFile}>
             Display Data
           </button>
-          <p> File type: {fileType}
-          </p>
+          <div>
+            <ul id="descriptionList" style={{listStyleType:'none'}}>
+              <li>File Upload currently accepts Commodity, Bulky, and Kitchen Pail Lists</li>
+              <li>{fileType}</li>
+            </ul> 
+          </div>
             <table>
               <thead>
                 <tr>
