@@ -2,6 +2,8 @@
 import {useState} from "react";
 import Papa from "papaparse"; //import Papaprase
 import * as XLSX from "xlsx";
+//import { TableVirtuoso } from 'react-virtuoso';
+import Export  from "./ExportData";
 
 //First parser component
 export const Parser = () => {
@@ -16,7 +18,9 @@ export const Parser = () => {
 
     //debugging method
     function consoleLogFile() {
+      const newData = data;
       console.log(data);
+      return newData;
       }
 
     //https://stackoverflow.com/questions/67950444/how-to-convert-csv-file-data-to-json-object-in-reactjs
@@ -26,11 +30,11 @@ export const Parser = () => {
             fileName = fullFileName.split('.')[0] || 'No file',
             fileExtensionType = (fullFileName.match(/\.csv|\.xlsx|.xls/gi) || [])[0];
 
-            //thes check file input
-            console.log(files)
-            console.log(fullFileName)
-            console.log(fileExtensionType)
-            console.log(fileName)
+            //this checks file input
+            // console.log(files)
+            // console.log(fullFileName)
+            // console.log(fileExtensionType)
+            // console.log(fileName)
 
       if(fileExtensionType === '.csv') setFileType(fileName + fileExtensionType);
       if(fileExtensionType === '.xlsx') setFileType(fileName + fileExtensionType);
@@ -55,7 +59,7 @@ export const Parser = () => {
                       route = entries.filter(x => x[0] === 'ROUTES').map(index => ['Route', index[1]]),
                       district = entries.filter(x => x[0] === 'DISTRICT_NAME').map(index => ['District', index[1]]),
                       convertedEntries = Object.fromEntries([name, phone, route, district].flat());
-                
+
                 //set intial object state again
                 convertedEntries.ContactAttempts = 0;
                 convertedEntries.FullMessage = 0;
@@ -64,16 +68,20 @@ export const Parser = () => {
                 convertedEntries.SuccessfulConnection = 0;
                 convertedEntries.ToVoiceMail = 0;
 
-                //return final array of correctly filled/populated objects
+                //return final shallow copy array of correctly filled/populated objects
                 return convertedEntries;
-              });
-                //removes last row due to intial values being re-set
-                const cleandCommodityData = convertedCommodityData.slice(0, convertedCommodityData.length-1);
-                setData(cleandCommodityData)
+              }); 
+
+              const cleandCommodityData = convertedCommodityData
+                      .filter(object => object.TelephoneNumber !== 'NULL')  //filter check if TelephoneNumber exists; name doesn't matter
+                      .slice(0, convertedCommodityData.length-1);           //removes last row due to intial values being re-set
+
+              setData(cleandCommodityData);
+              //return(cleandCommodityData);
             }
           })
         }
-        //processes data using XLSX from SheetJS based on Bulky xlsx file
+        //processes data using XLSX from SheetJS based on Bulky xlsx file; Papaparse does not support xlsx
         if(fileExtensionType === '.xlsx'){
           const data = await files[0].arrayBuffer(),
                 workbook = XLSX.read(data),
@@ -105,8 +113,12 @@ export const Parser = () => {
               return convertedBulkyEntries;
             });
               //removes last row due to intial values being re-set
-              const cleandBulkyData = convertedBulkyData.slice(0, convertedBulkyData.length-1);
+              const cleandBulkyData = convertedBulkyData
+                      .filter(object =>  object.TelephoneNumber)  //filter 'NULL' phone number from array of objects
+                      .slice(0, convertedBulkyData.length-1);     //removes last row due to intial values being re-set
+              console.log(convertedBulkyData)
               setData(cleandBulkyData)
+              //return(cleandBulkyData);
           }
 
           //checks if there is an 'GreenWaste_Routes' field to classify data as kitchen pail data
@@ -132,8 +144,12 @@ export const Parser = () => {
               return convertedKitchenPailEntries;
             });
               //removes last row due to intial values being re-set
-              const cleanedKitchenPailData = convertedKitchenPailData.slice(0, convertedKitchenPailData.length-1);
-              setData(cleanedKitchenPailData)
+              const cleanedKitchenPailData = convertedKitchenPailData
+                      .filter(object => object.TelephoneNumber !== 'NULL')  //filter 'NULL' phone number from array of objects
+                      .slice(0, convertedKitchenPailData.length-1);         //removes last row due to intial values being re-set
+
+              setData(cleanedKitchenPailData);
+             // return(cleanedKitchenPailData);
           }
         }
     }
@@ -148,6 +164,7 @@ export const Parser = () => {
           <button className="button1" id='displayDataButton' onClick={consoleLogFile}>
             Display Data
           </button>
+          <Export consoleLogFile={consoleLogFile}/>
           <div>
             <ul id="descriptionList" style={{listStyleType:'none'}}>
               <li>File Upload currently accepts Commodity, Bulky, and Kitchen Pail Lists</li>
