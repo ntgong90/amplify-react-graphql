@@ -1,6 +1,9 @@
 import { React } from "react";
 import { CSVLink } from "react-csv";
 
+
+//this file was used a template for child data inheritence from parent component
+
 function Export({consoleLogFile}){
     
     return(

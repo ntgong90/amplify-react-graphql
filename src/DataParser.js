@@ -1,27 +1,33 @@
-
 import {useState} from "react";
 import Papa from "papaparse"; //import Papaprase
 import * as XLSX from "xlsx";
 //import { TableVirtuoso } from 'react-virtuoso';
-import Export  from "./ExportData";
+//import Export  from "./ExportData";
+import { CSVLink } from "react-csv";
 
 //First parser component
-export const Parser = () => {
+ export const Parser = ({exportData, sendDataToParent}) => {
   //useState definitions here
     const defaultState = [{
       TelephoneNumber: '1234567890', ContactAttempts: 0, FullMessage: 0, lastCallBlast: 0, lastCallBlastTime: 0,
       Name: 'Constiuent', SuccessfulConnection: 0, ToVoiceMail:0, Route: 'Default', District:'ICSD'}];
     const intialFileTypeState = ['Please upload a file'];
 
+    //hard coded header format for CSVLink 
+    const outputHeader = [{label:'TelephoneNumber', key:'TelephoneNumber'}, {label:'ContactAttempts', key:'ContactAttempts'},
+      {label:'FullMessage',key:'FullMessage'},{label:'lastCallBlast', key:'lastCallBlast'}, {label:'lastCallBlastTime', key:'lastCallBlastTime'},
+      {label:'Name', key:'Name'}, {label:'SuccessfulConnection',key:'SuccessfulConnection'}, {label:'ToVoiceMail', key:'ToVoiceMail'},
+      {label:'Route', key:'Route'}, {label:'District', key:'District'}];
+
     const [data, setData] = useState(defaultState);
     const [fileType, setFileType] = useState(intialFileTypeState);
 
     //debugging method
     function consoleLogFile() {
-      const newData = data;
       console.log(data);
-      return newData;
       }
+
+
 
     //https://stackoverflow.com/questions/67950444/how-to-convert-csv-file-data-to-json-object-in-reactjs
     const handleFileUpload = async(event) => {
@@ -160,11 +166,19 @@ export const Parser = () => {
             <input type="file" id="input-file" accept=".csv,.xlsx,.xls"
              onChange = {(e) => handleFileUpload(e)}
             />
+
+
           {/* This button is for debugging */}
-          <button className="button1" id='displayDataButton' onClick={consoleLogFile}>
+          <button className="button1" id='displayDataButton' onClick={consoleLogFile()}>
             Display Data
           </button>
-          <Export consoleLogFile={consoleLogFile}/>
+          <CSVLink
+                data={data}
+                headers={outputHeader}
+                filename={'results.csv'}
+                classNam='outputCSV'>
+            Donwload Me
+          </CSVLink>
           <div>
             <ul id="descriptionList" style={{listStyleType:'none'}}>
               <li>File Upload currently accepts Commodity, Bulky, and Kitchen Pail Lists</li>
