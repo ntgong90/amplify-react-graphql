@@ -170,6 +170,8 @@ import { CSVLink } from "react-csv";
           <button className="button1" id='displayDataButton' onClick={consoleLogFile()}>
             Display Data
           </button>
+
+          
           <CSVLink
                 data={data}
                 headers={outputHeader}
