@@ -7,7 +7,7 @@ import { CSVLink } from "react-csv";
 
 //First parser component
  export const Parser = ({exportData, sendDataToParent}) => {
-  //useState definitions here
+    //useState definitions here
     const defaultState = [{
       TelephoneNumber: '1234567890', ContactAttempts: 0, FullMessage: 0, lastCallBlast: 0, lastCallBlastTime: 0,
       Name: 'Constiuent', SuccessfulConnection: 0, ToVoiceMail:0, Route: 'Default', District:'ICSD'}];
@@ -26,8 +26,6 @@ import { CSVLink } from "react-csv";
     function consoleLogFile() {
       console.log(data);
       }
-
-
 
     //https://stackoverflow.com/questions/67950444/how-to-convert-csv-file-data-to-json-object-in-reactjs
     const handleFileUpload = async(event) => {
@@ -170,6 +168,8 @@ import { CSVLink } from "react-csv";
           <button className="button1" id='displayDataButton' onClick={consoleLogFile()}>
             Display Data
           </button>
+
+          
           <CSVLink
                 data={data}
                 headers={outputHeader}
