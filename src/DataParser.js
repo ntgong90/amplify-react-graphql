@@ -14,7 +14,7 @@ import { CSVLink } from "react-csv";
     const intialFileTypeState = ['Please upload a file'];
 
     //hard coded header format for CSVLink 
-    const outputHeader = [{label:'TelephoneNumber', key:'TelephoneNumber'}, {label:'ContactAttempts', key:'ContactAttempts'},
+    const outputHeader = [{label:'TelephoneNumber', key:'TelephoneNumber'}, {label:'contactAttempts', key:'contactAttempts'},
       {label:'FullMessage',key:'FullMessage'},{label:'lastCallBlast', key:'lastCallBlast'}, {label:'lastCallBlastTime', key:'lastCallBlastTime'},
       {label:'Name', key:'Name'}, {label:'SuccessfulConnection',key:'SuccessfulConnection'}, {label:'ToVoiceMail', key:'ToVoiceMail'},
       {label:'Route', key:'Route'}, {label:'District', key:'District'}];
@@ -166,8 +166,6 @@ import { CSVLink } from "react-csv";
             <input type="file" id="input-file" accept=".csv,.xlsx,.xls"
              onChange = {(e) => handleFileUpload(e)}
             />
-
-
           {/* This button is for debugging */}
           <button className="button1" id='displayDataButton' onClick={consoleLogFile()}>
             Display Data
